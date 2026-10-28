@@ -13,8 +13,9 @@ on phones, where max-width:100% fits its natural 800px width to the screen. Phon
 pieces share a line with desktop pieces whose widths leave a few px of slack, so
 they add no extra lines on desktop.
 """
-import os
-from build_header import ROOT
+import json, os
+from build_header import ROOT, SRC
+from build_work import STATS
 
 MQ = "(max-width: 767px)"
 P = "variants/phone/assets/"
@@ -36,6 +37,11 @@ def desk(svg, w=100, alt="", href=None, phone=None):
 def phone_only(svg, alt="", href=None):
     return pic("assets/dot.svg", phone=P + svg, alt=alt, href=href)
 
+def cards(p):
+    rs = STATS.get(p, [])[:4]; link = lambda i: "https://github.com/" + rs[i]["repo"]
+    return [[desk(f"{p}-{i+1}.svg", 50 * K, rs[i]["name"], link(i)) for i in range(j, min(j + 2, len(rs)))]
+            + [phone_only(f"{p}-{i+1}.svg", rs[i]["name"], link(i)) for i in range(j, min(j + 2, len(rs)))] for j in range(0, len(rs), 2)]
+
 K = 0.992   # shrink multi-piece lines a little so the 1px phone slots always fit beside them
 lines = [
     [desk("header-1.svg", alt="Burhanuddin Bohra: Full-Stack Web & Software Developer", phone="hero.svg")],
@@ -46,12 +52,10 @@ lines = [
     [desk("header-4.svg", alt="Same universe. Different ideas. Explore, build, learn, automate, repeat.")],
     [desk("section-about.svg", alt="02 About", phone="about.svg")],
     [desk("section-arsenal.svg", alt="03 Arsenal: frontend, backend and systems tools", phone="arsenal.svg")],
-    [desk("section-work.svg", alt="04 Selected work", phone="work-title.svg")],
-    [desk(f"work-{i+1}.svg", w * K, n, REPO + n) for i, (n, w) in enumerate([("op-caelestia-shell", 25.85), ("PocketFix", 24.15), ("Marg", 24.15), ("QuizSolver", 25.85)])]
-    + [phone_only(f"work-{i+1}.svg", n, REPO + n) for i, n in enumerate(["op-caelestia-shell", "PocketFix", "Marg", "QuizSolver"])],
+    [desk("section-work.svg", alt="04 Recent work", phone="work-title.svg")],
+] + cards("work") + [
     [desk("section-oss.svg", alt="05 Open source", phone="oss-title.svg")],
-    [desk("oss-1.svg", 50 * K, "Cero-Terminal", "https://github.com/NetPranav/Cero-Terminal"), desk("oss-2.svg", 50 * K, "WebGen, originally LazyLayouts", "https://github.com/NetPranav/WebGen"),
-     phone_only("oss-1.svg", "Cero-Terminal", "https://github.com/NetPranav/Cero-Terminal"), phone_only("oss-2.svg", "WebGen, originally LazyLayouts", "https://github.com/NetPranav/WebGen")],
+] + cards("oss") + [
     [desk("section-stats.svg", alt="06 Live GitHub stats", phone="stats.svg")],
     [desk("section-footer.svg", alt="Explore, build, learn, automate, repeat", phone="footer.svg")],
 ]

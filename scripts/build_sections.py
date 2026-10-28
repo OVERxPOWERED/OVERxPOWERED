@@ -20,7 +20,7 @@ def strip(idx, label, right):
             f'{box(1022, 24, 953, 58)}{right}')
 
 def tag(x, y, text):
-    w = len(text) * 8.6 + 20
+    w = len(text) * 10.8 + 24
     return f'<rect x="{x}" y="{y}" width="{w:.0f}" height="24" fill="#0a0a0a" stroke="{LN}" stroke-width="1"/><text x="{x+10}" y="{y+17}" font-size="12.5" letter-spacing="1">{text}</text>'
 
 def pan(values, dur, key="0;0.5;1"):
@@ -83,8 +83,8 @@ def footer():
     for i, w in enumerate(words):
         t += (f'<text x="{x:.0f}" y="59" font-size="17" letter-spacing="1.5" opacity="0.55">{w}<animate attributeName="opacity" values="0.55;1;1;0.55;0.55" '
               f'keyTimes="0;{i/5+0.03:.3f};{i/5+0.15:.3f};{i/5+0.2:.3f};1" dur="10s" repeatCount="indefinite"/></text>')
-        x += len(w) * 11.7
-        if i < 4: t += f'<text x="{x+12:.0f}" y="59" font-size="17">+</text>'; x += 38
+        x += len(w) * 14.6
+        if i < 4: t += f'<text x="{x+12:.0f}" y="59" font-size="17">+</text>'; x += 48
     body = (f'{box(40, 24, 80, 58)}<text x="80" y="59" font-size="17" text-anchor="middle">07</text>'
             f'{box(120, 24, 890, 58)}{t}{box(1022, 24, 953, 58)}{vline(1912, 24, 82)}'
             f'<text x="1050" y="59" font-size="15" letter-spacing="2" opacity="0.7">BURHANUDDIN BOHRA / OPEN SOURCE / SYNCED {TODAY.isoformat()} UTC</text>'

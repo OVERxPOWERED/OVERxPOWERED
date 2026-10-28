@@ -8,86 +8,74 @@ import json, os
 from build_header import DAY, FG, LN, MONTH, SRC, TODAY, box, hline, svg, twinkle, vline, write
 from build_sections import art, pan, strip, tag
 
-PROJECTS = [
-    ("op-caelestia-shell", "WAYLAND DESKTOP SHELL", ["Fluid, morphing desktop shell for Wayland.", "Zero-latency interaction, dynamic animation", "and an ergonomic developer workspace."], ["QML", "C++", "GLSL", "WAYLAND"], 15),
-    ("PocketFix", "FULL-STACK TASK &amp; WORKFLOW APP", ["Production-ready full-stack app built for", "efficient, reliable task coordination."], ["NEXT.JS", "TYPESCRIPT", "POSTGRESQL"], 10),
-    ("Marg", "LOGISTICS &amp; DISPATCH PLATFORM", ["Freight dispatch, real-time tracking and", "route management in one platform."], ["NEXT.JS", "TYPESCRIPT", "PYTHON"], 13),
-    ("QuizSolver", "ASSESSMENT AUTOMATION", ["Parses and evaluates structured", "assessments with automation scripts."], ["PYTHON", "AUTOMATION"], 17),
-]
+import textwrap
+
+STATS = json.load(open(os.path.join(SRC, "stats.json")))
+WORK_ART, OSS_ART = [15, 10, 13, 17], [14, 18, 6, 9]
+
+def describe(r, width):
+    """Sub-heading plus wrapped description (max 3 lines) for a live repo entry."""
+    langs = r.get("langs") or []
+    sub = " / ".join(l.upper() for l in langs[:3]) or "REPOSITORY"
+    text = r.get("desc", "").strip() or f"Recently active{' ' + langs[0] if langs else ''} project. Open the repo for the latest work."
+    lines = textwrap.wrap(text.replace("&", "&amp;"), width)
+    if len(lines) > 3: lines = lines[:3]; lines[2] = lines[2][:width - 3].rstrip() + "..."
+    return sub.replace("&", "&amp;"), lines
+
+def tags(r):
+    return [t.upper().replace("&", "&amp;") for t in dict.fromkeys((r.get("langs") or [])[:3] + (r.get("topics") or [])[:2])][:5]
+
 GAP = 12
-CARD_W = (2000 - 80 - 3 * GAP) // 4          # 471
 
 def chips(x, y, labels, maxx):
     out = ""
     for l in labels:
-        w = len(l) * 8.4 + 22
-        if x + w > maxx: x = 0; y += 34
-        out += f'{box(x, y, round(w), 25)}<text x="{x+11}" y="{y+17.5}" font-size="12.5" letter-spacing="1">{l}</text>'
-        x += w + 8
+        w = len(l) * 12.6 + 26
+        if x + w > maxx: x = 0; y += 46
+        out += f'{box(x, y, round(w), 34)}<text x="{x+13}" y="{y+23.5}" font-size="18.5" letter-spacing="1">{l}</text>'
+        x += w + 10
     return out
 
-def work_cards():
-    H = 600; ART_H = 250
-    for k, (name, sub, desc, tech, n) in enumerate(PROJECTS):
-        left = 40 if k == 0 else GAP // 2
-        right = 40 if k == 3 else GAP // 2
-        W = left + CARD_W + right; x = left
-        im = art(n, None, 72)
-        from PIL import Image
-        iw, ih = Image.open(os.path.join(SRC, f"art-{n}.jpg")).size
-        sh = ih * CARD_W / iw; shift = max(sh - ART_H, 0) * 0.6
-        defs = f'<clipPath id="a"><rect x="{x+1}" y="11" width="{CARD_W-2}" height="{ART_H-2}"/></clipPath>'
-        txt = "".join(f'<text x="{x+26}" y="{ART_H+138+i*23}" font-size="15.5" opacity="0.88">{l}</text>' for i, l in enumerate(desc))
-        body = (f'{box(x, 10, CARD_W, H-20)}<g clip-path="url(#a)"><g>{pan(f"0 0;0 -{shift:.0f};0 0", 36 + k*6)}'
-                f'<image href="{im}" x="{x+1}" y="11" width="{CARD_W-2}" height="{sh:.0f}"/></g></g>{hline(x, x+CARD_W, 10+ART_H)}'
-                f'{tag(x+14, 24, f"{k+1:02d} / PROJECT")}'
-                f'<text x="{x+26}" y="{ART_H+58}" font-size="30" letter-spacing="0.5">{name}</text>'
-                f'<text x="{x+26}" y="{ART_H+86}" font-size="12.5" letter-spacing="2.5" opacity="0.6">{sub}</text>{hline(x+26, x+CARD_W-26, ART_H+104, 0.45)}{txt}'
-                f'<g transform="translate({x+26} {H-130})">{chips(0, 0, tech, CARD_W-52)}</g>'
-                f'<text x="{x+CARD_W-26}" y="{H-36}" font-size="14" letter-spacing="3" text-anchor="end">OPEN REPO -&gt;'
-                f'<animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="{k*0.5}s" repeatCount="indefinite"/></text>')
-        write(f"work-{k+1}.svg", svg(W, H, body, defs))
-
-def work_strip():
-    right = '<text x="1498" y="59" font-size="17" letter-spacing="3" text-anchor="middle">PRODUCTS + OPEN SOURCE + AUTOMATION</text>'
-    write("section-work.svg", svg(2000, 100, strip("04", "SELECTED WORK", right)))
-
-OSS_META = {
-    "Cero-Terminal": ("TERMINAL + LOCAL AI + .FLOW FILES", ["A terminal that takes requests in plain language", "and runs .flow setup files on macOS, Windows and", "Linux. Built-in local AI model, Ollama or a cloud key."], ["TAURI", "RUST", "REACT", "TYPESCRIPT", "LLAMA.CPP"], 14),
-    "WebGen": ("TEMPLATE GENERATOR / ORIGINALLY LAZYLAYOUTS", ["Generate templates easily."], ["TYPESCRIPT", "AI", "TEMPLATES"], 18),
-}
-OSS_FALLBACK = [{"repo": "NetPranav/Cero-Terminal", "name": "Cero-Terminal", "stars": 0, "pushed": "", "mine": 0},
-                {"repo": "NetPranav/WebGen", "name": "WebGen", "stars": 0, "pushed": "", "mine": 0}]
-
-def oss_strip():
-    right = '<text x="1498" y="59" font-size="17" letter-spacing="3" text-anchor="middle">CONTRIBUTING TO OTHER PEOPLE\'S BUILDS</text>'
-    write("section-oss.svg", svg(2000, 100, strip("05", "OPEN SOURCE", right)))
-
-def oss_cards():
+def cards(key, prefix, label, arts, third):
+    """Two-up horizontal cards for live repo data. Sizes here are final (not scaled)."""
     from PIL import Image
-    H = 400; gap = 12; cw = (2000 - 80 - gap) // 2; aw = 330
-    items = json.load(open(os.path.join(SRC, "stats.json"))).get("oss") or OSS_FALLBACK
-    for k, r in enumerate(items[:2]):
-        sub, desc, tech, n = OSS_META[r["name"]]
-        left = 40 if k == 0 else gap // 2; right = gap // 2 if k == 0 else 40
+    H = 470; cw = (2000 - 80 - GAP) // 2; aw = 300
+    for k in range(4):
+        r = (STATS.get(key) or [])[k:k + 1]
+        left = 40 if k % 2 == 0 else GAP // 2; right = GAP // 2 if k % 2 == 0 else 40
         W = left + cw + right; x = left
+        if not r:
+            write(f"{prefix}-{k+1}.svg", svg(W, H + 20, "", scale=False)); continue
+        r = r[0]; n = arts[k]; tx = x + aw + 30; avail = cw - aw - 54
+        sub, desc = describe(r, int(avail / 13.8))
         iw, ih = Image.open(os.path.join(SRC, f"art-{n}.jpg")).size
         sc = max(aw / iw, (H - 2) / ih); sw_, sh_ = iw * sc, ih * sc
-        shift = max(sh_ - (H - 2), 0) * 0.5; axis = "0 0;0 -%d;0 0" % shift if sh_ > H else "0 0;-%d 0;0 0" % (max(sw_ - aw, 0) * 0.5)
-        tx = x + aw + 30
-        stat = lambda i, v, l: (f'<text x="{tx+i*190}" y="284" font-size="{38 if len(str(v)) < 6 else 24}" letter-spacing="-1">{v}</text>'
-                                f'<text x="{tx+i*190}" y="308" font-size="12" letter-spacing="2.5" opacity="0.6">{l}</text>')
+        axis = "0 0;0 -%d;0 0" % (sh_ - H + 2) if sh_ > H else "0 0;-%d 0;0 0" % max(sw_ - aw, 1)
+        fs = min(52, avail / (0.6 * max(len(r["name"]), 1)))
+        stat = lambda i, v, l: (f'<text x="{tx+i*190}" y="322" font-size="{44 if len(str(v)) < 6 else 28}" letter-spacing="-1">{v}</text>'
+                                f'<text x="{tx+i*190}" y="350" font-size="16" letter-spacing="2.5" opacity="0.6">{l}</text>')
+        third_v, third_l = third(r)
         defs = f'<clipPath id="a"><rect x="{x+1}" y="11" width="{aw-1}" height="{H-2}"/></clipPath>'
-        body = (f'{box(x, 10, cw, H)}<g clip-path="url(#a)"><g>{pan(axis, 40)}<image href="{art(n, None, 72)}" x="{x+1}" y="11" width="{sw_:.0f}" height="{sh_:.0f}"/></g></g>{vline(x+aw, 10, 10+H)}'
-                f'{tag(x+14, 24, f"{k+1:02d} / OPEN SOURCE")}'
-                f'<text x="{tx}" y="82" font-size="40">{r["name"]}</text>'
-                f'<text x="{x+cw-24}" y="48" font-size="12" letter-spacing="3" text-anchor="end" opacity="0.8">CONTRIBUTOR</text>'
-                f'<text x="{tx}" y="110" font-size="12.5" letter-spacing="2.5" opacity="0.6">{sub}</text>{hline(tx, x+cw-24, 130, 0.45)}'
-                + "".join(f'<text x="{tx}" y="{168+i*25}" font-size="15.5" opacity="0.9">{l}</text>' for i, l in enumerate(desc)) +
-                stat(0, r["mine"], "MY COMMITS") + stat(1, r["stars"], "STARS") + stat(2, r["pushed"] or "-", "LAST PUSH") +
-                f'{hline(tx, x+cw-24, 326, 0.45)}<g transform="translate({tx} 342)">{chips(0, 0, tech, cw-aw-54)}</g>'
-                f'<text x="{x+cw-24}" y="{H-8}" font-size="14" letter-spacing="3" text-anchor="end">OPEN REPO -&gt;<animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="{k*0.5}s" repeatCount="indefinite"/></text>')
-        write(f"oss-{k+1}.svg", svg(W, H + 20, body, defs))
+        body = (f'{box(x, 10, cw, H)}<g clip-path="url(#a)"><g>{pan(axis, 40 + k * 5)}<image href="{art(n, None, 72)}" x="{x+1}" y="11" width="{sw_:.0f}" height="{sh_:.0f}"/></g></g>{vline(x+aw, 10, 10+H)}'
+                f'{tag(x+14, 24, f"{k+1:02d} / {label}")}'
+                f'<text x="{tx}" y="84" font-size="{fs:.0f}">{r["name"]}</text>'
+                f'<text x="{tx}" y="118" font-size="17" letter-spacing="2.5" opacity="0.6">{sub}</text>{hline(tx, x+cw-24, 142, 0.45)}'
+                + "".join(f'<text x="{tx}" y="{184+i*34}" font-size="23" opacity="0.9">{l}</text>' for i, l in enumerate(desc)) +
+                stat(0, third_v, third_l) + stat(1, r["stars"], "STARS") + stat(2, r["pushed"] or "-", "LAST PUSH") +
+                f'{hline(tx, x+cw-24, 372, 0.45)}<g transform="translate({tx} 386)">{chips(0, 0, tags(r), avail)}</g>'
+                f'<text x="{x+cw-24}" y="{H-2}" font-size="17" letter-spacing="3" text-anchor="end">OPEN REPO -&gt;<animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="{k*0.5}s" repeatCount="indefinite"/></text>')
+        write(f"{prefix}-{k+1}.svg", svg(W, H + 20, body, defs, scale=False))
+
+def work_cards(): cards("work", "work", "PROJECT", WORK_ART, lambda r: ((r.get("langs") or ["-"])[0].upper(), "MAIN LANG"))
+def oss_cards(): cards("oss", "oss", "OPEN SOURCE", OSS_ART, lambda r: (r["mine"], "MY COMMITS"))
+
+def work_strip():
+    right = '<text x="1498" y="59" font-size="17" letter-spacing="3" text-anchor="middle">MOST RECENT PUSHES</text>'
+    write("section-work.svg", svg(2000, 100, strip("04", "RECENT WORK", right)))
+
+def oss_strip():
+    right = '<text x="1498" y="59" font-size="17" letter-spacing="3" text-anchor="middle">RECENT CONTRIBUTIONS</text>'
+    write("section-oss.svg", svg(2000, 100, strip("05", "OPEN SOURCE", right)))
 
 def num(n): return f"{n:,}"
 
@@ -130,7 +118,7 @@ def stats():
             f'{hm}<rect x="700" y="{hy}" width="860" height="112" fill="url(#sw)" mask="url(#hm)"/>'
             f'<text x="{hx}" y="{Y+H-122}" font-size="13" letter-spacing="3" opacity="0.6">WEEKLY ACTIVITY</text>{bars}'
             f'{box(1600, Y, 360, H)}<text x="1626" y="{Y+38}" font-size="13" letter-spacing="3" opacity="0.6">TOP LANGUAGES</text>{twinkle(1930, Y+30, 8, 3.4)}{langs}'
-            f'<text x="1626" y="{Y+H-18}" font-size="11.5" letter-spacing="1" opacity="0.45">PUBLIC NON-FORK REPOS / BY BYTES</text>')
+            f'<text x="1626" y="{Y+H-6}" font-size="11.5" letter-spacing="1" opacity="0.45">PUBLIC NON-FORK REPOS / BY BYTES</text>')
     write("section-stats.svg", svg(2000, Y + H + 20, body, defs))
 
 if __name__ == "__main__":

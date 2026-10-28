@@ -9,7 +9,7 @@ import json, os, textwrap
 from build_header import DAY, GH, LN, MONTH, SRC, TODAY, box, hline, spin_star, svg, twinkle, vline
 from build_asym import Tile, crop_lv, frame, label, pan, shiny, tag, tile_art
 from build_sections import art
-from build_work import OSS_FALLBACK, OSS_META, PROJECTS
+from build_work import OSS_ART, WORK_ART, describe, tags
 import build_header, build_asym
 
 OUT = os.path.join(build_header.ROOT, "variants", "phone")
@@ -91,7 +91,7 @@ def arsenal():
 
 # ------------------------------------------------------------------ work
 def work_title():
-    write("work-title.svg", svg(W, 100, strip("04", "SELECTED WORK")))
+    write("work-title.svg", svg(W, 100, strip("04", "RECENT WORK")))
 
 def chips(x, y, labels, maxx):
     out = ""
@@ -104,15 +104,15 @@ def chips(x, y, labels, maxx):
 
 def work():
     from PIL import Image
-    for k, (name, sub, desc, tech, n) in enumerate(PROJECTS):
+    for k, r in enumerate((S.get("work") or [])[:4]):
+        n = WORK_ART[k]; sub, lines = describe(r, 44)
         iw, ih = Image.open(os.path.join(SRC, f"art-{n}.jpg")).size
         t = Tile(art(n, None, 70), iw, ih, 24, 14, 752, 280, axis="y", dur=36 + k * 6, travel=0.6, ghosted=False)
-        lines = [l for l in desc]
         body = (f'{frame(24, 14, 752, 644)}{t.svg}{hline(24, 776, 294)}{tag(40, 28, f"{k+1:02d} / PROJECT")}'
-                f'<text x="48" y="352" font-size="42">{name}</text>{label(48, 384, sub, 20, 2.5, 0.6)}{hline(48, 752, 404, 0.4)}'
+                f'<text x="48" y="352" font-size="{min(42, 700 / (0.6 * len(r["name"]))):.0f}">{r["name"]}</text>{label(48, 384, sub, 20, 2.5, 0.6)}{hline(48, 752, 404, 0.4)}'
                 f'{txt(48, 446, lines, 24, 34, 0.9)}'
-                f'<g transform="translate(48 {446+len(lines)*34+14})">{chips(0, 0, tech, 700)}</g>'
-                f'{label(752, 638, "OPEN REPO -&gt;", 22, 3, 0.9, "end")}')
+                f'<g transform="translate(48 {446+3*34+14})">{chips(0, 0, tags(r), 700)}</g>'
+                f'{label(48, 638, "PUSHED " + r["pushed"], 20, 2.5, 0.6)}{label(752, 638, "OPEN REPO -&gt;", 22, 3, 0.9, "end")}')
         write(f"work-{k+1}.svg", svg(W, 672, body, t.defs))
 
 # ------------------------------------------------------------------ stats
@@ -142,19 +142,17 @@ def oss_title():
 
 def oss():
     from PIL import Image
-    items = S.get("oss") or OSS_FALLBACK
-    for k, r in enumerate(items[:2]):
-        sub, desc, tech, n = OSS_META[r["name"]]
-        desc = textwrap.wrap(" ".join(desc), 44)
+    for k, r in enumerate((S.get("oss") or [])[:4]):
+        sub, desc = describe(r, 44); n = OSS_ART[k]
         iw, ih = Image.open(os.path.join(SRC, f"art-{n}.jpg")).size
         t = Tile(art(n, None, 70), iw, ih, 24, 14, 752, 280, axis="y", dur=40 + k * 6, travel=0.5, ghosted=False)
-        stat = lambda i, v, l: (f'<text x="{48+i*250}" y="{y0+56}" font-size="{44 if len(str(v)) < 6 else 28}">{v}</text>{label(48+i*250, y0+84, l, 18, 2.5, 0.6)}')
         y0 = 446 + len(desc) * 34 + 20
+        stat = lambda i, v, l: (f'<text x="{48+i*250}" y="{y0+56}" font-size="{44 if len(str(v)) < 6 else 28}">{v}</text>{label(48+i*250, y0+84, l, 18, 2.5, 0.6)}')
         body = (f'{frame(24, 14, 752, y0+250)}{t.svg}{hline(24, 776, 294)}{tag(40, 28, f"{k+1:02d} / OPEN SOURCE")}'
-                f'<text x="48" y="352" font-size="42">{r["name"]}</text>{label(48, 384, sub if len(sub) < 40 else "TEMPLATES / ORIGINALLY LAZYLAYOUTS", 19, 2.5, 0.6)}{label(752, 352, "CONTRIBUTOR", 18, 3, 0.8, "end")}{hline(48, 752, 404, 0.4)}'
+                f'<text x="48" y="352" font-size="{min(42, 520 / (0.6 * len(r["name"]))):.0f}">{r["name"]}</text>{label(48, 384, sub, 19, 2.5, 0.6)}{label(752, 352, "CONTRIBUTOR", 18, 3, 0.8, "end")}{hline(48, 752, 404, 0.4)}'
                 f'{txt(48, 446, desc, 24, 34, 0.9)}{hline(48, 752, y0-6, 0.4)}'
                 f'{stat(0, r["mine"], "MY COMMITS")}{stat(1, r["stars"], "STARS")}{stat(2, r["pushed"] or "-", "LAST PUSH")}'
-                f'<g transform="translate(48 {y0+112})">{chips(0, 0, tech, 700)}</g>{label(752, y0+226, "OPEN REPO -&gt;", 22, 3, 0.9, "end")}')
+                f'<g transform="translate(48 {y0+112})">{chips(0, 0, tags(r), 700)}</g>{label(752, y0+226, "OPEN REPO -&gt;", 22, 3, 0.9, "end")}')
         write(f"oss-{k+1}.svg", svg(W, y0 + 278, body, t.defs))
 
 def footer():
@@ -163,21 +161,21 @@ def footer():
             f'<text x="400" y="122" font-size="22" letter-spacing="3" text-anchor="middle" opacity="0.8">AUTOMATE + REPEAT</text>')
     write("footer.svg", svg(W, 160, body))
 
-README = """<p>
+def readme():
+    link = lambda r, f: f'<a href="https://github.com/{r["repo"]}"><img src="assets/{f}" width="100%" alt="{r["name"]}"/></a>'
+    rows = "\n".join(link(r, f"work-{i+1}.svg") for i, r in enumerate((S.get("work") or [])[:4]))
+    oss = "\n".join(link(r, f"oss-{i+1}.svg") for i, r in enumerate((S.get("oss") or [])[:4]))
+    return f"""<p>
 <img src="assets/hero.svg" width="100%" alt="Burhanuddin Bohra: Full-Stack Web & Software Developer"/>
 <a href="https://github.com/OVERxPOWERED"><img src="assets/btn-github.svg" width="100%" alt="GitHub: OVERxPOWERED"/></a>
 <a href="https://www.linkedin.com/in/burhanuddin-bohra-629abb370/"><img src="assets/btn-linkedin.svg" width="100%" alt="LinkedIn: Burhanuddin Bohra"/></a>
 <a href="mailto:6burhanuddin6@gmail.com"><img src="assets/btn-email.svg" width="100%" alt="Email: 6burhanuddin6@gmail.com"/></a>
 <img src="assets/about.svg" width="100%" alt="About"/>
 <img src="assets/arsenal.svg" width="100%" alt="Arsenal"/>
-<img src="assets/work-title.svg" width="100%" alt="Selected work"/>
-<a href="https://github.com/OVERxPOWERED/op-caelestia-shell"><img src="assets/work-1.svg" width="100%" alt="op-caelestia-shell"/></a>
-<a href="https://github.com/OVERxPOWERED/PocketFix"><img src="assets/work-2.svg" width="100%" alt="PocketFix"/></a>
-<a href="https://github.com/OVERxPOWERED/Marg"><img src="assets/work-3.svg" width="100%" alt="Marg"/></a>
-<a href="https://github.com/OVERxPOWERED/QuizSolver"><img src="assets/work-4.svg" width="100%" alt="QuizSolver"/></a>
+<img src="assets/work-title.svg" width="100%" alt="Recent work"/>
+{rows}
 <img src="assets/oss-title.svg" width="100%" alt="Open source"/>
-<a href="https://github.com/NetPranav/Cero-Terminal"><img src="assets/oss-1.svg" width="100%" alt="Cero-Terminal"/></a>
-<a href="https://github.com/NetPranav/WebGen"><img src="assets/oss-2.svg" width="100%" alt="WebGen, originally LazyLayouts"/></a>
+{oss}
 <img src="assets/stats.svg" width="100%" alt="Live GitHub stats"/>
 <img src="assets/footer.svg" width="100%" alt="Explore, build, learn, automate, repeat"/>
 </p>
@@ -185,4 +183,4 @@ README = """<p>
 
 if __name__ == "__main__":
     hero(); buttons(); about(); arsenal(); work_title(); work(); oss_title(); oss(); stats(); footer()
-    open(os.path.join(OUT, "README.md"), "w").write(README)
+    open(os.path.join(OUT, "README.md"), "w").write(readme())

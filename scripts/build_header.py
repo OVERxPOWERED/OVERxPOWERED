@@ -6,7 +6,7 @@ artwork in assets/src/. GitHub renders SMIL animation inside <img> but does not
 make links inside an SVG clickable, so the contact bar is split into one SVG
 per link and the README wraps each in <a>.
 """
-import base64, datetime, io, math, os, random
+import base64, datetime, io, math, os, random, re
 from PIL import Image
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,7 +30,14 @@ def crop(box, q=82):
     REF.crop(box).save(buf, "JPEG", quality=q, optimize=True)
     return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
 
-def svg(w, h, body, defs=""):
+# Desktop SVGs are 2000 units wide but shown ~850px wide on GitHub, so text is multiplied by TEXT_K
+# (phone SVGs are 800 wide and already sized for their screen; cards that set final sizes pass scale=False).
+TEXT_K = 1.25
+def scale_text(body, k=TEXT_K):
+    return re.sub(r'(font-size|letter-spacing)="([\d.]+)"', lambda m: f'{m[1]}="{float(m[2]) * k:.1f}"', body)
+
+def svg(w, h, body, defs="", scale=True):
+    if scale and w == 2000: body = scale_text(body)
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">
 <defs><style>@font-face{{font-family:'HM';src:url(data:font/woff2;base64,{FONT}) format('woff2');}}
 text{{font-family:{MONO};fill:{FG};}}</style>
@@ -79,8 +86,8 @@ def row1():
 {box(120, 24, 890, 58)}{t}{hline(840, 985, 53)}
 {box(1022, 24, 953, 58)}{vline(1145, 24, 82)}{vline(1458, 24, 82)}{vline(1850, 24, 82)}{vline(1912, 24, 82)}
 {bars}
-<text x="1480" y="48" font-size="16" letter-spacing="0.5">A CURIOUS MIND</text>
-<text x="1480" y="70" font-size="16" letter-spacing="0.5">TURNING IDEAS INTO REAL THINGS.</text>
+<text x="1470" y="48" font-size="14" letter-spacing="0">A CURIOUS MIND</text>
+<text x="1470" y="70" font-size="14" letter-spacing="0">TURNING IDEAS INTO REAL THINGS.</text>
 <text x="1881" y="49" font-size="16" text-anchor="middle">{DAY}</text>{hline(1869, 1893, 55)}
 <text x="1881" y="72" font-size="16" text-anchor="middle">{MONTH}</text>
 {spin_star(1943, 53, 15)}'''
