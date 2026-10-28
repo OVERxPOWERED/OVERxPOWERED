@@ -1,0 +1,29 @@
+name: Update header date
+
+on:
+  schedule:
+    - cron: "5 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/fetch_stats.py
+      - run: python scripts/build_header.py && python scripts/build_sections.py && python scripts/build_work.py && python scripts/build_asym.py && python scripts/build_minimal.py && python scripts/build_phone.py
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets variants
+          git diff --cached --quiet || git commit -m "chore: update header date" && git push
