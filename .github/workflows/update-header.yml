@@ -1,4 +1,4 @@
-name: Update header date
+name: Update profile
 
 on:
   schedule:
@@ -20,7 +20,7 @@ jobs:
       - env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/fetch_stats.py
-      - run: python scripts/build_header.py && python scripts/build_sections.py && python scripts/build_work.py && python scripts/build_asym.py && python scripts/build_minimal.py && python scripts/build_phone.py
+      - run: python scripts/build_header.py && python scripts/build_sections.py && python scripts/build_work.py && python scripts/build_asym.py && python scripts/build_minimal.py && python scripts/build_phone.py && python scripts/build_responsive.py
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"

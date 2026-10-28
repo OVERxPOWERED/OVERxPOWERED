@@ -5,11 +5,11 @@ Phone variant: single column, every SVG is 800 units wide and the smallest text 
 ~22 units, so on a ~390px screen it renders at ~11px or larger. Links are full-width
 stacked buttons. Writes variants/phone/{README.md,assets/*.svg}.
 """
-import json, os
+import json, os, textwrap
 from build_header import DAY, GH, LN, MONTH, SRC, TODAY, box, hline, spin_star, svg, twinkle, vline
 from build_asym import Tile, crop_lv, frame, label, pan, shiny, tag, tile_art
 from build_sections import art
-from build_work import PROJECTS
+from build_work import OSS_FALLBACK, OSS_META, PROJECTS
 import build_header, build_asym
 
 OUT = os.path.join(build_header.ROOT, "variants", "phone")
@@ -131,11 +131,31 @@ def stats():
             f'<animateTransform attributeName="gradientTransform" type="translate" values="{hx} 0;{hx+850} 0;{hx+850} 0" keyTimes="0;0.5;1" dur="7s" repeatCount="indefinite"/></linearGradient>')
     langs = "".join(f'<text x="44" y="{y0+696+i*54}" font-size="23" letter-spacing="1">{n.upper()}</text><text x="756" y="{y0+696+i*54}" font-size="23" text-anchor="end" opacity="0.7">{p}%</text>'
                     f'{box(44, y0+708+i*54, 712, 10)}<rect x="44" y="{y0+708+i*54}" width="{max(4, 712*p/100):.0f}" height="10" fill="#fff"><animate attributeName="width" values="0;{max(4, 712*p/100):.0f};{max(4, 712*p/100):.0f}" keyTimes="0;0.2;1" dur="8s" begin="{i*0.25}s" repeatCount="indefinite"/></rect>' for i, (n, p) in enumerate(s["langs"]))
-    body = (f'{strip("05", "LIVE STATS")}{big}'
+    body = (f'{strip("06", "LIVE STATS")}{big}'
             f'{box(24, y0+350, 752, 224)}{label(44, y0+392, "CONTRIBUTION MAP / 12 MONTHS", 19, 2.5, 0.65)}{hm}<rect x="{hx}" y="{hy}" width="730" height="100" fill="url(#sw)" mask="url(#hm)"/>'
             f'{label(44, y0+556, f"SYNCED DAILY / {TODAY.isoformat()} UTC", 17, 2, 0.5)}'
             f'{box(24, y0+596, 752, 350)}{label(44, y0+638, "TOP LANGUAGES / PUBLIC REPOS", 19, 2.5, 0.65)}{langs}')
     write("stats.svg", svg(W, y0 + 970, body, defs))
+
+def oss_title():
+    write("oss-title.svg", svg(W, 100, strip("05", "OPEN SOURCE")))
+
+def oss():
+    from PIL import Image
+    items = S.get("oss") or OSS_FALLBACK
+    for k, r in enumerate(items[:2]):
+        sub, desc, tech, n = OSS_META[r["name"]]
+        desc = textwrap.wrap(" ".join(desc), 44)
+        iw, ih = Image.open(os.path.join(SRC, f"art-{n}.jpg")).size
+        t = Tile(art(n, None, 70), iw, ih, 24, 14, 752, 280, axis="y", dur=40 + k * 6, travel=0.5, ghosted=False)
+        stat = lambda i, v, l: (f'<text x="{48+i*250}" y="{y0+56}" font-size="{44 if len(str(v)) < 6 else 28}">{v}</text>{label(48+i*250, y0+84, l, 18, 2.5, 0.6)}')
+        y0 = 446 + len(desc) * 34 + 20
+        body = (f'{frame(24, 14, 752, y0+250)}{t.svg}{hline(24, 776, 294)}{tag(40, 28, f"{k+1:02d} / OPEN SOURCE")}'
+                f'<text x="48" y="352" font-size="42">{r["name"]}</text>{label(48, 384, sub if len(sub) < 40 else "TEMPLATES / ORIGINALLY LAZYLAYOUTS", 19, 2.5, 0.6)}{label(752, 352, "CONTRIBUTOR", 18, 3, 0.8, "end")}{hline(48, 752, 404, 0.4)}'
+                f'{txt(48, 446, desc, 24, 34, 0.9)}{hline(48, 752, y0-6, 0.4)}'
+                f'{stat(0, r["mine"], "MY COMMITS")}{stat(1, r["stars"], "STARS")}{stat(2, r["pushed"] or "-", "LAST PUSH")}'
+                f'<g transform="translate(48 {y0+112})">{chips(0, 0, tech, 700)}</g>{label(752, y0+226, "OPEN REPO -&gt;", 22, 3, 0.9, "end")}')
+        write(f"oss-{k+1}.svg", svg(W, y0 + 278, body, t.defs))
 
 def footer():
     body = (f'{hline(24, 776, 30, 0.4)}{spin_star(400, 30, 11, 14)}'
@@ -155,11 +175,14 @@ README = """<p>
 <a href="https://github.com/OVERxPOWERED/PocketFix"><img src="assets/work-2.svg" width="100%" alt="PocketFix"/></a>
 <a href="https://github.com/OVERxPOWERED/Marg"><img src="assets/work-3.svg" width="100%" alt="Marg"/></a>
 <a href="https://github.com/OVERxPOWERED/QuizSolver"><img src="assets/work-4.svg" width="100%" alt="QuizSolver"/></a>
+<img src="assets/oss-title.svg" width="100%" alt="Open source"/>
+<a href="https://github.com/NetPranav/Cero-Terminal"><img src="assets/oss-1.svg" width="100%" alt="Cero-Terminal"/></a>
+<a href="https://github.com/NetPranav/WebGen"><img src="assets/oss-2.svg" width="100%" alt="WebGen, originally LazyLayouts"/></a>
 <img src="assets/stats.svg" width="100%" alt="Live GitHub stats"/>
 <img src="assets/footer.svg" width="100%" alt="Explore, build, learn, automate, repeat"/>
 </p>
 """
 
 if __name__ == "__main__":
-    hero(); buttons(); about(); arsenal(); work_title(); work(); stats(); footer()
+    hero(); buttons(); about(); arsenal(); work_title(); work(); oss_title(); oss(); stats(); footer()
     open(os.path.join(OUT, "README.md"), "w").write(README)

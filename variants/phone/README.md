@@ -10,6 +10,9 @@
 <a href="https://github.com/OVERxPOWERED/PocketFix"><img src="assets/work-2.svg" width="100%" alt="PocketFix"/></a>
 <a href="https://github.com/OVERxPOWERED/Marg"><img src="assets/work-3.svg" width="100%" alt="Marg"/></a>
 <a href="https://github.com/OVERxPOWERED/QuizSolver"><img src="assets/work-4.svg" width="100%" alt="QuizSolver"/></a>
+<img src="assets/oss-title.svg" width="100%" alt="Open source"/>
+<a href="https://github.com/NetPranav/Cero-Terminal"><img src="assets/oss-1.svg" width="100%" alt="Cero-Terminal"/></a>
+<a href="https://github.com/NetPranav/WebGen"><img src="assets/oss-2.svg" width="100%" alt="WebGen, originally LazyLayouts"/></a>
 <img src="assets/stats.svg" width="100%" alt="Live GitHub stats"/>
 <img src="assets/footer.svg" width="100%" alt="Explore, build, learn, automate, repeat"/>
 </p>
