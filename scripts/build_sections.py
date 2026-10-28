@@ -16,7 +16,7 @@ def art(n, region=None, q=78):
 
 def strip(idx, label, right):
     return (f'{box(40, 24, 80, 58)}<text x="80" y="59" font-size="17" text-anchor="middle">{idx}</text>'
-            f'{box(120, 24, 890, 58)}<text x="165" y="59" font-size="17" letter-spacing="3">{label}</text>{hline(165 + len(label) * 20.5, 985, 53)}'
+            f'{box(120, 24, 890, 58)}<text x="165" y="59" font-size="17" letter-spacing="3">{label}</text>{hline(165 + len(label) * 23, 985, 53)}'
             f'{box(1022, 24, 953, 58)}{right}')
 
 def tag(x, y, text):
@@ -29,7 +29,7 @@ def pan(values, dur, key="0;0.5;1"):
 
 # ------------------------------------------------------------------ About
 def about():
-    Y = 100; H = 320
+    Y = 100; H = 450
     defs = (f'<clipPath id="p1"><rect x="41" y="{Y+1}" width="598" height="{H-2}"/></clipPath>'
             f'<clipPath id="p3"><rect x="1361" y="{Y+1}" width="598" height="{H-2}"/></clipPath>')
     chart = art(7, (0, 230, 736, 960))      # constellation chart, compass star near the middle
@@ -45,15 +45,15 @@ def about():
     scale = 598 / 736; ih = 1308 * scale
     p3 = (f'<g clip-path="url(#p3)"><g>{pan(f"0 0;0 -{ih - H:.0f};0 0", 90)}'
           f'<image href="{nebula}" x="1361" y="{Y+1}" width="598" height="{ih:.0f}"/></g></g>')
-    lines = ["I build scalable web applications and modern", "desktop experiences. Fast, reliable, precise.", "",
-             "Daily driver: Arch Linux + Wayland + Zsh.", "Somewhere between products, open source,", "automations, drones, gaming and UI-UX design."]
-    txt = "".join(f'<text x="692" y="{Y+82+i*25}" font-size="17.5" opacity="0.93">{l}</text>' for i, l in enumerate(lines))
+    lines = ["I build scalable web applications", "and modern desktop experiences.", "Fast, reliable, precise.", "",
+             "Daily driver: Arch + Wayland + Zsh.", "Between products, open source,", "automations, drones, gaming, UI-UX."]
+    txt = "".join(f'<text x="692" y="{Y+88+i*32}" font-size="16" opacity="0.93">{l}</text>' for i, l in enumerate(lines))
     rows = [("STATUS", "ONLINE &amp; SHIPPING DAILY"), ("WORKSTATION", "LINUX + WAYLAND + ZSH"), ("OPEN TO", "COLLABORATIONS &amp; ROLES")]
-    tbl = "".join(f'{hline(662, 1338, Y+H-92+i*30, 0.5)}<text x="692" y="{Y+H-72+i*30}" font-size="13.5" letter-spacing="2" opacity="0.6">{k}</text>'
-                  f'<text x="880" y="{Y+H-72+i*30}" font-size="14.5" letter-spacing="1">{v}</text>' for i, (k, v) in enumerate(rows))
+    tbl = "".join(f'{hline(662, 1338, Y+H-110+i*38, 0.5)}<text x="692" y="{Y+H-10+(i-3)*38}" font-size="11.5" letter-spacing="1.5" opacity="0.6">{k}</text>'
+                  f'<text x="930" y="{Y+H-10+(i-3)*38}" font-size="13.5" letter-spacing="1">{v}</text>' for i, (k, v) in enumerate(rows))
     body = f'''{strip("02", "ABOUT", right)}
 {p1}{box(40, Y, 600, H)}{tag(54, Y+H-38, "FIG. 02 / STAR CHART")}
-{box(660, Y, 680, H)}<text x="692" y="{Y+40}" font-size="13.5" letter-spacing="3" opacity="0.6">FULL-STACK WEB &amp; SOFTWARE DEVELOPER</text>{hline(692, 1308, Y+54, 0.5)}{txt}{tbl}{spin_star(1308, Y+36, 9, 10)}
+{box(660, Y, 680, H)}<text x="692" y="{Y+40}" font-size="12" letter-spacing="2.5" opacity="0.6">FULL-STACK WEB &amp; SOFTWARE DEVELOPER</text>{hline(692, 1308, Y+54, 0.5)}{txt}{tbl}{spin_star(1308, Y+36, 9, 10)}
 {p3}{box(1360, Y, 600, H)}{tag(1374, Y+H-38, "FIG. 03 / NEBULA")}'''
     write("section-about.svg", svg(2000, Y + H + 20, body, defs))
 
@@ -81,13 +81,13 @@ def footer():
     from build_header import TODAY
     words = ["EXPLORE", "BUILD", "LEARN", "AUTOMATE", "REPEAT"]; x = 165; t = ""
     for i, w in enumerate(words):
-        t += (f'<text x="{x:.0f}" y="59" font-size="17" letter-spacing="1.5" opacity="0.55">{w}<animate attributeName="opacity" values="0.55;1;1;0.55;0.55" '
+        t += (f'<text x="{x:.0f}" y="59" font-size="15" letter-spacing="1.5" opacity="0.55">{w}<animate attributeName="opacity" values="0.55;1;1;0.55;0.55" '
               f'keyTimes="0;{i/5+0.03:.3f};{i/5+0.15:.3f};{i/5+0.2:.3f};1" dur="10s" repeatCount="indefinite"/></text>')
-        x += len(w) * 14.6
-        if i < 4: t += f'<text x="{x+12:.0f}" y="59" font-size="17">+</text>'; x += 48
+        x += len(w) * 16.8
+        if i < 4: t += f'<text x="{x+12:.0f}" y="59" font-size="17">+</text>'; x += 50
     body = (f'{box(40, 24, 80, 58)}<text x="80" y="59" font-size="17" text-anchor="middle">07</text>'
             f'{box(120, 24, 890, 58)}{t}{box(1022, 24, 953, 58)}{vline(1912, 24, 82)}'
-            f'<text x="1050" y="59" font-size="15" letter-spacing="2" opacity="0.7">BURHANUDDIN BOHRA / OPEN SOURCE / SYNCED {TODAY.isoformat()} UTC</text>'
+            f'<text x="1050" y="59" font-size="12" letter-spacing="1" opacity="0.7">BURHANUDDIN BOHRA / OPEN SOURCE / SYNCED {TODAY.isoformat()} UTC</text>'
             f'{spin_star(1943, 53, 15)}')
     write("section-footer.svg", svg(2000, 110, body))
 

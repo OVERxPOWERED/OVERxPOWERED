@@ -30,16 +30,19 @@ GAP = 12
 def chips(x, y, labels, maxx):
     out = ""
     for l in labels:
-        w = len(l) * 12.6 + 26
-        if x + w > maxx: x = 0; y += 46
-        out += f'{box(x, y, round(w), 34)}<text x="{x+13}" y="{y+23.5}" font-size="18.5" letter-spacing="1">{l}</text>'
+        w = len(l) * 14.4 + 30
+        if x + w > maxx: x = 0; y += 50
+        out += f'{box(x, y, round(w), 40)}<text x="{x+15}" y="{y+28}" font-size="22" letter-spacing="1">{l}</text>'
         x += w + 10
     return out
+
+def ctag(x, y, text):
+    return f'<rect x="{x}" y="{y}" width="{len(text) * 12.6 + 24:.0f}" height="34" fill="#0a0a0a" stroke="{LN}" stroke-width="1"/><text x="{x+12}" y="{y+24}" font-size="19" letter-spacing="1">{text}</text>'
 
 def cards(key, prefix, label, arts, third):
     """Two-up horizontal cards for live repo data. Sizes here are final (not scaled)."""
     from PIL import Image
-    H = 470; cw = (2000 - 80 - GAP) // 2; aw = 300
+    H = 600; cw = (2000 - 80 - GAP) // 2; aw = 300
     for k in range(4):
         r = (STATS.get(key) or [])[k:k + 1]
         left = 40 if k % 2 == 0 else GAP // 2; right = GAP // 2 if k % 2 == 0 else 40
@@ -47,26 +50,26 @@ def cards(key, prefix, label, arts, third):
         if not r:
             write(f"{prefix}-{k+1}.svg", svg(W, H + 20, "", scale=False)); continue
         r = r[0]; n = arts[k]; tx = x + aw + 30; avail = cw - aw - 54
-        sub, desc = describe(r, int(avail / 13.8))
+        sub, desc = describe(r, int(avail / 17.5))
         iw, ih = Image.open(os.path.join(SRC, f"art-{n}.jpg")).size
         sc = max(aw / iw, (H - 2) / ih); sw_, sh_ = iw * sc, ih * sc
         axis = "0 0;0 -%d;0 0" % (sh_ - H + 2) if sh_ > H else "0 0;-%d 0;0 0" % max(sw_ - aw, 1)
-        fs = min(52, avail / (0.6 * max(len(r["name"]), 1)))
-        stat = lambda i, v, l: (f'<text x="{tx+i*190}" y="322" font-size="{44 if len(str(v)) < 6 else 28}" letter-spacing="-1">{v}</text>'
-                                f'<text x="{tx+i*190}" y="350" font-size="16" letter-spacing="2.5" opacity="0.6">{l}</text>')
+        fs = min(62, avail / (0.6 * max(len(r["name"]), 1)))
+        stat = lambda i, v, l: (f'<text x="{tx+i*190}" y="392" font-size="{52 if len(str(v)) < 6 else 34}" letter-spacing="-1">{v}</text>'
+                                f'<text x="{tx+i*190}" y="422" font-size="18" letter-spacing="2" opacity="0.6">{l}</text>')
         third_v, third_l = third(r)
         defs = f'<clipPath id="a"><rect x="{x+1}" y="11" width="{aw-1}" height="{H-2}"/></clipPath>'
         body = (f'{box(x, 10, cw, H)}<g clip-path="url(#a)"><g>{pan(axis, 40 + k * 5)}<image href="{art(n, None, 72)}" x="{x+1}" y="11" width="{sw_:.0f}" height="{sh_:.0f}"/></g></g>{vline(x+aw, 10, 10+H)}'
-                f'{tag(x+14, 24, f"{k+1:02d} / {label}")}'
-                f'<text x="{tx}" y="84" font-size="{fs:.0f}">{r["name"]}</text>'
-                f'<text x="{tx}" y="118" font-size="17" letter-spacing="2.5" opacity="0.6">{sub}</text>{hline(tx, x+cw-24, 142, 0.45)}'
-                + "".join(f'<text x="{tx}" y="{184+i*34}" font-size="23" opacity="0.9">{l}</text>' for i, l in enumerate(desc)) +
+                f'{ctag(x+14, 24, f"{k+1:02d} / {label}")}'
+                f'<text x="{tx}" y="92" font-size="{fs:.0f}">{r["name"]}</text>'
+                f'<text x="{tx}" y="132" font-size="21" letter-spacing="2" opacity="0.6">{sub}</text>{hline(tx, x+cw-24, 156, 0.45)}'
+                + "".join(f'<text x="{tx}" y="{204+i*42}" font-size="29" opacity="0.9">{l}</text>' for i, l in enumerate(desc)) +
                 stat(0, third_v, third_l) + stat(1, r["stars"], "STARS") + stat(2, r["pushed"] or "-", "LAST PUSH") +
-                f'{hline(tx, x+cw-24, 372, 0.45)}<g transform="translate({tx} 386)">{chips(0, 0, tags(r), avail)}</g>'
-                f'<text x="{x+cw-24}" y="{H-2}" font-size="17" letter-spacing="3" text-anchor="end">OPEN REPO -&gt;<animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="{k*0.5}s" repeatCount="indefinite"/></text>')
+                f'{hline(tx, x+cw-24, 444, 0.45)}<g transform="translate({tx} 464)">{chips(0, 0, tags(r), avail)}</g>'
+                f'<text x="{x+cw-24}" y="{H+4}" font-size="21" letter-spacing="3" text-anchor="end">OPEN REPO -&gt;<animate attributeName="opacity" values="0.55;1;0.55" dur="3.2s" begin="{k*0.5}s" repeatCount="indefinite"/></text>')
         write(f"{prefix}-{k+1}.svg", svg(W, H + 20, body, defs, scale=False))
 
-def work_cards(): cards("work", "work", "PROJECT", WORK_ART, lambda r: ((r.get("langs") or ["-"])[0].upper(), "MAIN LANG"))
+def work_cards(): cards("work", "work", "PROJECT", WORK_ART, lambda r: (len(r.get("langs") or []), "LANGUAGES"))
 def oss_cards(): cards("oss", "oss", "OPEN SOURCE", OSS_ART, lambda r: (r["mine"], "MY COMMITS"))
 
 def work_strip():
@@ -84,13 +87,13 @@ def stats():
     Y = 100; H = 330
     right = (f'<circle cx="1300" cy="53" r="5" fill="#fff"><animate attributeName="opacity" values="1;0.2;1" dur="2.4s" repeatCount="indefinite"/></circle>'
              f'<text x="1322" y="59" font-size="17" letter-spacing="3">SYNCED DAILY / {TODAY.isoformat()} UTC</text>')
-    cells = [("CONTRIBUTIONS / 1 YR", num(s["contributions"])), ("COMMITS", num(s["commits"])),
+    cells = [("CONTRIBUTIONS", num(s["contributions"])), ("COMMITS", num(s["commits"])),
              ("PULL REQUESTS", num(s["prs"])), ("CURRENT STREAK", f'{s["streak"]}D')]
     big = ""
     for i, (lab, val) in enumerate(cells):
         cx = 40 + (i % 2) * 290; cy = Y + (i // 2) * 165
         big += (f'{box(cx, cy, 290, 165)}<text x="{cx+22}" y="{cy+34}" font-size="12.5" letter-spacing="2.5" opacity="0.6">{lab}</text>'
-                f'<text x="{cx+22}" y="{cy+112}" font-size="62" letter-spacing="-1">{val}</text>')
+                f'<text x="{cx+22}" y="{cy+112}" font-size="40" letter-spacing="-1">{val}</text>')
     # heatmap
     days = s["days"]; weeks = [days[i:i + 7] for i in range(0, len(days), 7)][-53:]
     nz = sorted(d for d in days if d > 0); q = [nz[int(len(nz) * p)] for p in (0.25, 0.5, 0.75)] if nz else [1, 2, 3]
@@ -118,7 +121,7 @@ def stats():
             f'{hm}<rect x="700" y="{hy}" width="860" height="112" fill="url(#sw)" mask="url(#hm)"/>'
             f'<text x="{hx}" y="{Y+H-122}" font-size="13" letter-spacing="3" opacity="0.6">WEEKLY ACTIVITY</text>{bars}'
             f'{box(1600, Y, 360, H)}<text x="1626" y="{Y+38}" font-size="13" letter-spacing="3" opacity="0.6">TOP LANGUAGES</text>{twinkle(1930, Y+30, 8, 3.4)}{langs}'
-            f'<text x="1626" y="{Y+H-6}" font-size="11.5" letter-spacing="1" opacity="0.45">PUBLIC NON-FORK REPOS / BY BYTES</text>')
+            f'<text x="1626" y="{Y+H-6}" font-size="10" letter-spacing="0.5" opacity="0.45">NON-FORK REPOS / BY BYTES</text>')
     write("section-stats.svg", svg(2000, Y + H + 20, body, defs))
 
 if __name__ == "__main__":

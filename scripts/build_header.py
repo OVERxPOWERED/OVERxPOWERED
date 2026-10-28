@@ -32,7 +32,7 @@ def crop(box, q=82):
 
 # Desktop SVGs are 2000 units wide but shown ~850px wide on GitHub, so text is multiplied by TEXT_K
 # (phone SVGs are 800 wide and already sized for their screen; cards that set final sizes pass scale=False).
-TEXT_K = 1.25
+TEXT_K = 1.6
 def scale_text(body, k=TEXT_K):
     return re.sub(r'(font-size|letter-spacing)="([\d.]+)"', lambda m: f'{m[1]}="{float(m[2]) * k:.1f}"', body)
 
@@ -68,11 +68,11 @@ def spin_star(cx, cy, r, dur=14):
 
 # ------------------------------------------------------------------ row 1: top strip
 def row1():
-    words = [("EXPLORING", 165), ("BUILDING", 352), ("LEARNING", 525), ("REPEATING", 700)]
-    seps = [308, 482, 655]
+    words = [("EXPLORING", 150), ("BUILDING", 345), ("LEARNING", 535), ("REPEATING", 725)]
+    seps = [310, 500, 690]
     t = ""
     for k, (w, x) in enumerate(words):
-        t += (f'<text x="{x}" y="59" font-size="17" letter-spacing="1.5" opacity="0.55">{w}'
+        t += (f'<text x="{x}" y="59" font-size="15" letter-spacing="1.5" opacity="0.55">{w}'
               f'<animate attributeName="opacity" values="0.55;1;1;0.55;0.55" keyTimes="0;{k/4+0.03:.3f};{k/4+0.2:.3f};{k/4+0.25:.3f};1" dur="8s" repeatCount="indefinite"/></text>')
     for x in seps:
         t += f'<text x="{x}" y="59" font-size="17">+</text>'
@@ -83,13 +83,13 @@ def row1():
         bars += f'<rect x="{x}" y="38" width="{bw}" height="32" fill="#fff"><animate attributeName="opacity" values="1;0.35;1" dur="{d}s" begin="{round(random.uniform(0,2),1)}s" repeatCount="indefinite"/></rect>'
         x += bw + gap
     body = f'''{box(40, 24, 80, 58)}<text x="80" y="59" font-size="17" text-anchor="middle">01</text>
-{box(120, 24, 890, 58)}{t}{hline(840, 985, 53)}
+{box(120, 24, 890, 58)}{t}
 {box(1022, 24, 953, 58)}{vline(1145, 24, 82)}{vline(1458, 24, 82)}{vline(1850, 24, 82)}{vline(1912, 24, 82)}
 {bars}
-<text x="1470" y="48" font-size="14" letter-spacing="0">A CURIOUS MIND</text>
-<text x="1470" y="70" font-size="14" letter-spacing="0">TURNING IDEAS INTO REAL THINGS.</text>
-<text x="1881" y="49" font-size="16" text-anchor="middle">{DAY}</text>{hline(1869, 1893, 55)}
-<text x="1881" y="72" font-size="16" text-anchor="middle">{MONTH}</text>
+<text x="1470" y="48" font-size="12.5" letter-spacing="0">A CURIOUS MIND</text>
+<text x="1470" y="70" font-size="12.5" letter-spacing="0">TURNING IDEAS INTO REAL THINGS.</text>
+<text x="1881" y="48" font-size="13" text-anchor="middle">{DAY}</text>{hline(1869, 1893, 55)}
+<text x="1881" y="73" font-size="13" text-anchor="middle">{MONTH}</text>
 {spin_star(1943, 53, 15)}'''
     write("header-1.svg", svg(2000, 100, body))
 
@@ -115,12 +115,13 @@ def row2():
 <image href="{bohra}" x="58" y="198" width="490" height="144" opacity="0.9"/>
 <rect x="58" y="198" width="490" height="144" fill="url(#shine)" mask="url(#mb)"/>
 {box(560, 200, 80, 128)}{spin_star(600, 264, 21, 12)}{vline(655, 203, 330)}
-<text x="680" y="237" font-size="22" letter-spacing="1.2">FULL-STACK WEB &amp;</text>
-<text x="680" y="265" font-size="22" letter-spacing="1.2">SOFTWARE DEVELOPER</text>
-{hline(680, 694, 283)}
-<text x="680" y="307" font-size="17" opacity="0.92">Building scalable web applications</text>
-<text x="680" y="331" font-size="17" opacity="0.92">and modern desktop experiences.</text>
-<rect x="1004" y="318" width="10" height="17" fill="#fff"><animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.5;0.5;1" dur="1.1s" repeatCount="indefinite"/></rect>
+<text x="680" y="222" font-size="18" letter-spacing="1">FULL-STACK WEB &amp;</text>
+<text x="680" y="252" font-size="18" letter-spacing="1">SOFTWARE DEVELOPER</text>
+{hline(680, 694, 268)}
+<text x="680" y="298" font-size="14.5" opacity="0.92">Building scalable web</text>
+<text x="680" y="326" font-size="14.5" opacity="0.92">applications and modern</text>
+<text x="680" y="354" font-size="14.5" opacity="0.92">desktop experiences.</text>
+<rect x="968" y="338" width="10" height="20" fill="#fff"><animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.5;0.5;1" dur="1.1s" repeatCount="indefinite"/></rect>
 <g clip-path="url(#pc)"><g>{pan}<image href="{planet}" x="1050" y="12" width="918" height="440"/>
 <text x="1927" y="126" font-size="17" text-anchor="middle" opacity="0.92">{DAY}</text><text x="1927" y="148" font-size="17" text-anchor="middle" opacity="0.92">{MONTH}</text></g></g>
 {box(1048, 10, 922, 356)}
@@ -136,10 +137,10 @@ def pill(name, w, icon, label, left_edge=False, right_edge=False):
     lines = hline(x0, x1, 10) + hline(x0, x1, 70)
     if left_edge: lines += vline(x0, 10, 70)
     lines += vline(x1 if right_edge else w - 0.75, 10, 70)
-    arrow = (f'<text x="{x1-26}" y="46" font-size="17" text-anchor="end" opacity="0.55">'
+    arrow = (f'<text x="{x1-26}" y="46" font-size="22" text-anchor="end" opacity="0.55">'
              f'↗<animate attributeName="opacity" values="0.3;0.9;0.3" dur="3s" repeatCount="indefinite"/></text>').replace("↗", "&#8599;")
     ix = x0 + 28
-    body = f'{lines}<g transform="translate({ix} 24)">{icon}</g><text x="{ix+52}" y="46" font-size="18">{label}</text>'
+    body = f'{lines}<g transform="translate({ix} 24)">{icon}</g><text x="{ix+52}" y="49" font-size="{24 if len(label) < 15 else 22 if len(label) < 20 else 21}">{label}</text>'
     write(name, svg(w, 80, body))
 
 def row3():
@@ -152,7 +153,9 @@ def row3():
     cats = "PRODUCTS / OPEN SOURCE / AUTOMATIONS / DRONES / GAMING / UI-UX / DESIGN"
     defs = '''<linearGradient id="cs" gradientUnits="userSpaceOnUse" x1="-200" x2="0"><stop offset="0" stop-color="#8a8a8a"/><stop offset="0.5" stop-color="#fff"/><stop offset="1" stop-color="#8a8a8a"/>
 <animateTransform attributeName="gradientTransform" type="translate" values="0 0;1300 0" dur="6s" repeatCount="indefinite"/></linearGradient>'''
-    body = f'{hline(0, 840, 10)}{hline(0, 840, 70)}<text x="28" y="46" font-size="17" letter-spacing="1.2" style="fill:url(#cs)">{cats}</text>{vline(840, 10, 70)}'
+    body = (f'{hline(0, 840, 10)}{hline(0, 840, 70)}<clipPath id="mq"><rect x="1" y="11" width="838" height="58"/></clipPath><g clip-path="url(#mq)"><g>'
+            f'<text x="28" y="48" font-size="22" letter-spacing="1.2" style="fill:url(#cs)" xml:space="preserve">{cats}   /   {cats}</text>'
+            f'<animateTransform attributeName="transform" type="translate" values="0 0;-{len(cats + "   /   ") * 14.4:.0f} 0" dur="24s" repeatCount="indefinite"/></g></g>{vline(840, 10, 70)}')
     write("header-3d.svg", svg(880, 80, body, defs))
 
 # ------------------------------------------------------------------ row 4: bottom panels
@@ -173,21 +176,21 @@ def brackets(x, y, w, h, s=14):
 
 def row4():
     galaxy = crop((52, 580, 484, 716), 82); rocks = crop((884, 582, 1778, 714), 80)
-    defs = '<clipPath id="g"><rect x="40" y="8" width="448" height="144"/></clipPath><clipPath id="r"><rect x="880" y="8" width="905" height="144"/></clipPath>'
-    lines1 = ["SAME UNIVERSE.", "DIFFERENT IDEAS.", "//", "TURNING CURIOSITY", "INTO REAL THINGS."]
-    t1 = "".join(f'<text x="680" y="{37+i*20}" font-size="14.5">{l}</text>' for i, l in enumerate(lines1))
+    defs = '<clipPath id="g"><rect x="40" y="8" width="448" height="144"/></clipPath><clipPath id="r"><rect x="1008" y="8" width="777" height="144"/></clipPath>'
+    lines1 = ["SAME UNIVERSE.", "DIFFERENT IDEAS.", "TURNING CURIOSITY", "INTO REAL THINGS."]
+    t1 = "".join(f'<text x="680" y="{34+i*29}" font-size="14">{l}</text>' for i, l in enumerate(lines1))
     lines2 = ["EXPLORE", "BUILD", "LEARN", "AUTOMATE", "REPEAT"]
-    t2 = "".join(f'<text x="1819" y="{42+i*21}" font-size="14.5">{l}</text>' for i, l in enumerate(lines2))
+    t2 = "".join(f'<text x="1819" y="{30+i*26}" font-size="13">{l}</text>' for i, l in enumerate(lines2))
     body = f'''
 {box(40, 8, 448, 144)}<g clip-path="url(#g)"><g transform="translate(264 80)"><g>
 <image href="{galaxy}" x="-220" y="-70" width="440" height="140"/>
 <animateTransform attributeName="transform" type="scale" values="1;1.07;1" dur="16s" repeatCount="indefinite"/></g></g></g>
 {box(502, 8, 138, 144)}{brackets(512, 18, 118, 124)}{globe(571, 80, 52)}
-{box(662, 8, 203, 144)}{t1}{hline(680, 846, 136)}{twinkle(844, 136, 9, 3.6)}
-{box(880, 8, 905, 144)}<g clip-path="url(#r)"><g>
+{box(662, 8, 330, 144)}{t1}{twinkle(960, 134, 9, 3.6)}
+{box(1008, 8, 777, 144)}<g clip-path="url(#r)"><g>
 <animateTransform attributeName="transform" type="translate" values="0 0;-78 0;0 0" keyTimes="0;0.5;1" calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" dur="36s" repeatCount="indefinite"/>
-<image href="{rocks}" x="882" y="6" width="984" height="146"/></g></g>
-{box(1798, 8, 174, 144)}{t2}{hline(1819, 1852, 138)}{twinkle(1930, 62, 14, 3.9, 0.6)}'''
+<image href="{rocks}" x="1010" y="6" width="984" height="146"/></g></g>
+{box(1798, 8, 174, 144)}{t2}{twinkle(1930, 62, 14, 3.9, 0.6)}'''
     write("header-4.svg", svg(2000, 160, body, defs))
 
 if __name__ == "__main__":

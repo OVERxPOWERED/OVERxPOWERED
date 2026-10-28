@@ -4,6 +4,6 @@ text{font-family:'HM',ui-monospace,'JetBrains Mono',Menlo,Consolas,monospace;fil
 <filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 -0.35"/></filter>
 </defs>
 <rect width="440" height="80" fill="#0a0a0a"/>
-<line x1="0" y1="10" x2="440" y2="10" stroke="#CFCFCF" stroke-width="1.5" opacity="1"/><line x1="0" y1="70" x2="440" y2="70" stroke="#CFCFCF" stroke-width="1.5" opacity="1"/><line x1="439.25" y1="10" x2="439.25" y2="70" stroke="#CFCFCF" stroke-width="1.5"/><g transform="translate(28 24)"><rect width="40" height="32" y="3" rx="4" fill="#fff"/><path d="M3 8 L20 21 L37 8" fill="none" stroke="#0a0a0a" stroke-width="3" stroke-linejoin="round"/></g><text x="80" y="46" font-size="18">6burhanuddin6@gmail.com</text>
+<line x1="0" y1="10" x2="440" y2="10" stroke="#CFCFCF" stroke-width="1.5" opacity="1"/><line x1="0" y1="70" x2="440" y2="70" stroke="#CFCFCF" stroke-width="1.5" opacity="1"/><line x1="439.25" y1="10" x2="439.25" y2="70" stroke="#CFCFCF" stroke-width="1.5"/><g transform="translate(28 24)"><rect width="40" height="32" y="3" rx="4" fill="#fff"/><path d="M3 8 L20 21 L37 8" fill="none" stroke="#0a0a0a" stroke-width="3" stroke-linejoin="round"/></g><text x="80" y="49" font-size="21">6burhanuddin6@gmail.com</text>
 <rect width="440" height="80" filter="url(#grain)" opacity="0.07"/>
 </svg>
