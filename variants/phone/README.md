@@ -6,15 +6,15 @@
 <img src="assets/about.svg" width="100%" alt="About"/>
 <img src="assets/arsenal.svg" width="100%" alt="Arsenal"/>
 <img src="assets/work-title.svg" width="100%" alt="Recent work"/>
-<a href="https://github.com/OVERxPOWERED/AGNITIA-TERRA06"><img src="assets/work-1.svg" width="100%" alt="AGNITIA-TERRA06"/></a>
-<a href="https://github.com/OVERxPOWERED/Shortcuts"><img src="assets/work-2.svg" width="100%" alt="Shortcuts"/></a>
-<a href="https://github.com/OVERxPOWERED/Sticky-Notes-App"><img src="assets/work-3.svg" width="100%" alt="Sticky-Notes-App"/></a>
-<a href="https://github.com/OVERxPOWERED/General-Store-Manager"><img src="assets/work-4.svg" width="100%" alt="General-Store-Manager"/></a>
+<a href="https://github.com/OVERxPOWERED/op-caelestia-shell"><img src="assets/work-1.svg" width="100%" alt="op-caelestia-shell"/></a>
+<a href="https://github.com/OVERxPOWERED/AGNITIA-TERRA06"><img src="assets/work-2.svg" width="100%" alt="AGNITIA-TERRA06"/></a>
+<a href="https://github.com/OVERxPOWERED/Play-N-Learn"><img src="assets/work-3.svg" width="100%" alt="Play-N-Learn"/></a>
+<a href="https://github.com/OVERxPOWERED/QuizSolver"><img src="assets/work-4.svg" width="100%" alt="QuizSolver"/></a>
 <img src="assets/oss-title.svg" width="100%" alt="Open source"/>
-<a href="https://github.com/NetPranav/Magnm-Pitch"><img src="assets/oss-1.svg" width="100%" alt="Magnm-Pitch"/></a>
-<a href="https://github.com/NetPranav/Cero-Terminal"><img src="assets/oss-2.svg" width="100%" alt="Cero-Terminal"/></a>
-<a href="https://github.com/NetPranav/Marg-Backend"><img src="assets/oss-3.svg" width="100%" alt="Marg-Backend"/></a>
-<a href="https://github.com/NetPranav/Marg-Warehous"><img src="assets/oss-4.svg" width="100%" alt="Marg-Warehous"/></a>
+<a href="https://github.com/NetPranav/LazyLayout"><img src="assets/oss-1.svg" width="100%" alt="LazyLayout"/></a>
+<a href="https://github.com/NetPranav/Magnm-Pitch"><img src="assets/oss-2.svg" width="100%" alt="Magnm-Pitch"/></a>
+<a href="https://github.com/NetPranav/Cero-Terminal"><img src="assets/oss-3.svg" width="100%" alt="Cero-Terminal"/></a>
+<a href="https://github.com/NetPranav/Marg-Backend"><img src="assets/oss-4.svg" width="100%" alt="Marg-Backend"/></a>
 <img src="assets/stats.svg" width="100%" alt="Live GitHub stats"/>
 <img src="assets/footer.svg" width="100%" alt="Explore, build, learn, automate, repeat"/>
 </p>
