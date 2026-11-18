@@ -6,10 +6,10 @@
 <img src="assets/about.svg" width="100%" alt="About"/>
 <img src="assets/arsenal.svg" width="100%" alt="Arsenal"/>
 <img src="assets/work-title.svg" width="100%" alt="Recent work"/>
-<a href="https://github.com/OVERxPOWERED/Complete-MediKiosk"><img src="assets/work-1.svg" width="100%" alt="Complete-MediKiosk"/></a>
-<a href="https://github.com/OVERxPOWERED/Sticky-Notes-App"><img src="assets/work-2.svg" width="100%" alt="Sticky-Notes-App"/></a>
-<a href="https://github.com/OVERxPOWERED/Play-N-Learn"><img src="assets/work-3.svg" width="100%" alt="Play-N-Learn"/></a>
-<a href="https://github.com/OVERxPOWERED/AGNITIA-TERRA06"><img src="assets/work-4.svg" width="100%" alt="AGNITIA-TERRA06"/></a>
+<a href="https://github.com/OVERxPOWERED/AGNITIA-TERRA06"><img src="assets/work-1.svg" width="100%" alt="AGNITIA-TERRA06"/></a>
+<a href="https://github.com/OVERxPOWERED/Complete-MediKiosk"><img src="assets/work-2.svg" width="100%" alt="Complete-MediKiosk"/></a>
+<a href="https://github.com/OVERxPOWERED/Sticky-Notes-App"><img src="assets/work-3.svg" width="100%" alt="Sticky-Notes-App"/></a>
+<a href="https://github.com/OVERxPOWERED/Play-N-Learn"><img src="assets/work-4.svg" width="100%" alt="Play-N-Learn"/></a>
 <img src="assets/oss-title.svg" width="100%" alt="Open source"/>
 <a href="https://github.com/NetPranav/LazyLayout"><img src="assets/oss-1.svg" width="100%" alt="LazyLayout"/></a>
 <a href="https://github.com/NetPranav/Magnm-Pitch"><img src="assets/oss-2.svg" width="100%" alt="Magnm-Pitch"/></a>
