@@ -7,9 +7,9 @@
 <img src="assets/arsenal.svg" width="100%" alt="Arsenal"/>
 <img src="assets/work-title.svg" width="100%" alt="Recent work"/>
 <a href="https://github.com/OVERxPOWERED/AGNITIA-TERRA06"><img src="assets/work-1.svg" width="100%" alt="AGNITIA-TERRA06"/></a>
-<a href="https://github.com/OVERxPOWERED/op-caelestia-shell"><img src="assets/work-2.svg" width="100%" alt="op-caelestia-shell"/></a>
-<a href="https://github.com/OVERxPOWERED/RollsRoyce-Web-clone"><img src="assets/work-3.svg" width="100%" alt="RollsRoyce-Web-clone"/></a>
-<a href="https://github.com/OVERxPOWERED/Play-N-Learn"><img src="assets/work-4.svg" width="100%" alt="Play-N-Learn"/></a>
+<a href="https://github.com/OVERxPOWERED/Shortcuts"><img src="assets/work-2.svg" width="100%" alt="Shortcuts"/></a>
+<a href="https://github.com/OVERxPOWERED/op-caelestia-shell"><img src="assets/work-3.svg" width="100%" alt="op-caelestia-shell"/></a>
+<a href="https://github.com/OVERxPOWERED/RollsRoyce-Web-clone"><img src="assets/work-4.svg" width="100%" alt="RollsRoyce-Web-clone"/></a>
 <img src="assets/oss-title.svg" width="100%" alt="Open source"/>
 <a href="https://github.com/NetPranav/Magnm-Marketing"><img src="assets/oss-1.svg" width="100%" alt="Magnm-Marketing"/></a>
 <a href="https://github.com/kapilkurchaniya/mediflow"><img src="assets/oss-2.svg" width="100%" alt="mediflow"/></a>
